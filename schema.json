@@ -1,0 +1,29 @@
+{
+  "type": "component",
+  "metadata": {},
+  "schema": {
+    "name": "air-datepicker",
+    "friendlyName": "air-datepicker",
+    "description": "An amazing Budibase component!",
+    "icon": "Text",
+    "settings": [
+      {
+        "type": "field/number",
+        "label": "Field",
+        "key": "field",
+        "required": true
+      },
+      {
+        "type": "text",
+        "label": "Output format",
+        "key": "outputFormat",
+        "required": true
+      },
+      {
+        "type": "text",
+        "label": "Label",
+        "key": "label"
+      }
+    ]
+  }
+}
