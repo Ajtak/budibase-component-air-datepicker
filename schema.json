@@ -3,9 +3,9 @@
   "metadata": {},
   "schema": {
     "name": "air-datepicker",
-    "friendlyName": "air-datepicker",
+    "friendlyName": "Air Datepicker",
     "description": "An amazing Budibase component!",
-    "icon": "Text",
+    "icon": "Date",
     "settings": [
       {
         "type": "field/number",

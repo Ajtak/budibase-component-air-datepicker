@@ -3,6 +3,7 @@
     import {onMount} from 'svelte'
     import AirDatepicker from "air-datepicker";
     import 'air-datepicker/air-datepicker.css';
+    import {v4 as uuidv4} from 'uuid';
 
     import localeEn from 'air-datepicker/locale/en';
     import localeCs from 'air-datepicker/locale/cs';
@@ -17,9 +18,12 @@
     export let outputFormat;
     export let localeString;
 
+    export let label;
+
+    let labelFor = uuidv4();
 
     let calendarLocale = localeEn;
-    switch (localeString){
+    switch (localeString) {
         case "cs":
             calendarLocale = localeCs;
             break;
@@ -30,13 +34,20 @@
     const formStepContext = getContext("form-step");
     const fieldGroupContext = getContext("field-group")
 
+    const labelPos = fieldGroupContext?.labelPosition || "above";
+
+    $: labelClass =
+        labelPos === "above" ? "" : `spectrum-FieldLabel--${labelPos}`;
+
     const formApi = formContext?.formApi;
     $: formStep = formStepContext ? $formStepContext || 1 : 1;
     $: formField = formApi?.registerField(field, "datetime", 0, false, false, formStep);
 
     let fieldApi;
+    let fieldState;
 
     $: unsubscribe = formField?.subscribe((value) => {
+        fieldState = value?.fieldState;
         fieldApi = value?.fieldApi;
     });
 
@@ -46,7 +57,9 @@
     });
 
 
-    onMount(async () => {
+    onMount(() => {
+        console.log(fieldState);
+        console.log(fieldGroupContext);
         datePicker = new AirDatepicker(input, {
             locale: calendarLocale,
             onSelect({date, formattedDate, datepicker}) {
@@ -67,15 +80,23 @@
 
 
 <div class="spectrum-Form-item span-6 above" style="width: 100%" use:styleable={$component.styles} draggable="true">
+    {#if label}
+        <label for="{labelFor}" contenteditable="false"
+               class="spectrum-FieldLabel spectrum-FieldLabel--sizeM spectrum-Form-itemLabel">
+            {label}
+        </label>
+    {/if}
+
     <div class="spectrum-Form-itemField">
         <div class="spectrum-InputGroup spectrum-Datepicker" aria-readonly="false" aria-required="false"
              aria-haspopup="true">
             <div class="spectrum-Textfield spectrum-InputGroup-textfield ">
-                <input data-input="" type="text" bind:this={input}
+                <input id="{labelFor}" data-input="" type="text" bind:this={input}
                        class="spectrum-Textfield-input spectrum-InputGroup-input">
             </div>
 
-            <button on:click={openPicker} type="button" class="spectrum-Picker spectrum-Picker--sizeM spectrum-InputGroup-button"
+            <button on:click={openPicker} type="button"
+                    class="spectrum-Picker spectrum-Picker--sizeM spectrum-InputGroup-button"
                     tabindex="-1">
                 <div class="abs-tooltip">
                     <div class="icon ">
