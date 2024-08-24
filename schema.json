@@ -30,6 +30,11 @@
         "label": "Locale",
         "key": "localeString",
         "defaultValue": "en"
+      },
+      {
+        "type": "text",
+        "label": "Default value",
+        "key": "defaultValue"
       }
     ]
   }

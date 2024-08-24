@@ -4,44 +4,34 @@
     import AirDatepicker from "air-datepicker";
     import 'air-datepicker/air-datepicker.css';
     import {v4 as uuidv4} from 'uuid';
-
-    import localeEn from 'air-datepicker/locale/en';
-    import localeCs from 'air-datepicker/locale/cs';
+    import Locale  from './Locale.ts'
 
     const {styleable} = getContext("sdk")
 
     import moment from "moment";
 
-    let input;
-    let datePicker;
     export let field;
     export let outputFormat;
     export let localeString;
-
     export let label;
+    export let defaultValue;
+
+
+
+    let input;
+    let datePicker;
 
     let labelFor = uuidv4();
 
-    let calendarLocale = localeEn;
-    switch (localeString) {
-        case "cs":
-            calendarLocale = localeCs;
-            break;
-    }
 
     const component = getContext("component");
     const formContext = getContext("form");
     const formStepContext = getContext("form-step");
-    const fieldGroupContext = getContext("field-group")
 
-    const labelPos = fieldGroupContext?.labelPosition || "above";
-
-    $: labelClass =
-        labelPos === "above" ? "" : `spectrum-FieldLabel--${labelPos}`;
 
     const formApi = formContext?.formApi;
     $: formStep = formStepContext ? $formStepContext || 1 : 1;
-    $: formField = formApi?.registerField(field, "datetime", 0, false, false, formStep);
+    $: formField = formApi?.registerField(field, "text", 0, false, false, formStep);
 
     let fieldApi;
     let fieldState;
@@ -58,17 +48,16 @@
 
 
     onMount(() => {
-        console.log(fieldState);
-        console.log(fieldGroupContext);
         datePicker = new AirDatepicker(input, {
-            locale: calendarLocale,
+            locale: Locale.getLocale(localeString),
+            autoClose: true,
             onSelect({date, formattedDate, datepicker}) {
                 let dateOutput = moment(date).format(outputFormat);
                 fieldApi?.setValue(dateOutput);
-                datepicker.hide();
             },
         });
 
+        datePicker.selectDate(new Date(defaultValue));
         input.addEventListener('click', openPicker);
     });
 
@@ -79,7 +68,7 @@
 </script>
 
 
-<div class="spectrum-Form-item span-6 above" style="width: 100%" use:styleable={$component.styles} draggable="true">
+<div class="spectrum-Form-item span-6 above" use:styleable={$component.styles} draggable="true">
     {#if label}
         <label for="{labelFor}" contenteditable="false"
                class="spectrum-FieldLabel spectrum-FieldLabel--sizeM spectrum-Form-itemLabel">
@@ -99,7 +88,7 @@
                     class="spectrum-Picker spectrum-Picker--sizeM spectrum-InputGroup-button"
                     tabindex="-1">
                 <div class="abs-tooltip">
-                    <div class="icon ">
+                    <div class="icon">
                         <svg class="spectrum-Icon spectrum-Icon--sizeM" focusable="false"
                              aria-hidden="false" aria-label="Calendar"
                              style=" --hover-color: var(--spectrum-alias-icon-color-selected-hover)">

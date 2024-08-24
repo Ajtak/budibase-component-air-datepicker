@@ -1,5 +1,5 @@
 # Air-datepicker
-This is a readme for your new Budibase plugin.
+This is a readme for Air Datepicker Budibase plugin.
 
 # Description
 An amazing Budibase component!
