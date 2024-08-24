@@ -4,16 +4,26 @@
     import AirDatepicker from "air-datepicker";
     import 'air-datepicker/air-datepicker.css';
 
-    const {styleable} = getContext("sdk")
-
     import localeEn from 'air-datepicker/locale/en';
     import localeCs from 'air-datepicker/locale/cs';
+
+    const {styleable} = getContext("sdk")
+
     import moment from "moment";
 
     let input;
+    let datePicker;
     export let field;
     export let outputFormat;
+    export let localeString;
 
+
+    let calendarLocale = localeEn;
+    switch (localeString){
+        case "cs":
+            calendarLocale = localeCs;
+            break;
+    }
 
     const component = getContext("component");
     const formContext = getContext("form");
@@ -26,7 +36,6 @@
 
     let fieldApi;
 
-
     $: unsubscribe = formField?.subscribe((value) => {
         fieldApi = value?.fieldApi;
     });
@@ -36,20 +45,24 @@
         unsubscribe?.();
     });
 
-    onMount(() => {
-        console.log("Output date format ois " + outputFormat);
-        new AirDatepicker(input, {
-            locale: localeCs,
-            onSelect({date, formattedDate, datepicker}) {
-                console.log('Selected date:' + formattedDate);
-                let dateOutput = moment(date).format(outputFormat);
-                datepicker.hide();
-                fieldApi?.setValue(dateOutput);
-            },
 
+    onMount(async () => {
+        datePicker = new AirDatepicker(input, {
+            locale: calendarLocale,
+            onSelect({date, formattedDate, datepicker}) {
+                let dateOutput = moment(date).format(outputFormat);
+                fieldApi?.setValue(dateOutput);
+                datepicker.hide();
+            },
         });
+
+        input.addEventListener('click', openPicker);
     });
 
+
+    function openPicker() {
+        datePicker?.show();
+    }
 </script>
 
 
@@ -62,7 +75,7 @@
                        class="spectrum-Textfield-input spectrum-InputGroup-input">
             </div>
 
-            <button type="button" class="spectrum-Picker spectrum-Picker--sizeM spectrum-InputGroup-button"
+            <button on:click={openPicker} type="button" class="spectrum-Picker spectrum-Picker--sizeM spectrum-InputGroup-button"
                     tabindex="-1">
                 <div class="abs-tooltip">
                     <div class="icon ">
@@ -77,12 +90,12 @@
         </div>
     </div>
 </div>
+
 <style>
     .spectrum-Form-item.above {
         display: flex;
         flex-direction: column;
     }
-
 
     .spectrum-Datepicker {
         width: 100%;

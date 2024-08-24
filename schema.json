@@ -15,14 +15,21 @@
       },
       {
         "type": "text",
-        "label": "Output format",
-        "key": "outputFormat",
-        "required": true
+        "label": "Label",
+        "key": "label"
       },
       {
         "type": "text",
-        "label": "Label",
-        "key": "label"
+        "label": "Output format",
+        "key": "outputFormat",
+        "required": true,
+        "defaultValue": "YYYY-MM-DD"
+      },
+      {
+        "type": "text",
+        "label": "Locale",
+        "key": "localeString",
+        "defaultValue": "en"
       }
     ]
   }
